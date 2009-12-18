@@ -123,37 +123,42 @@ class Board(object):
        |   |   
 
     >>> b = Board()
-    >>> b.rows[1][1] = "X"
-    >>> b.rows[4][4] = "Y"
-    >>> b.rows[7][7] = "Z"
+    >>> b[1,1] = 1
+    >>> b[4,4] = 2
+    >>> b[7,7] = 3
     >>> b
        |   |   
-     X |   |   
+     1 |   |   
        |   |   
     ---+---+---
        |   |   
-       | Y |   
+       | 2 |   
        |   |   
     ---+---+---
        |   |   
-       |   | Z 
+       |   | 3 
        |   |   
     """
 
-    def __init__(self):
-        self.blocks = [Block()  for x in range(0, 9)]
-        self.cols   = [Column() for x in range(0, 9)]
-        self.rows   = [Row()    for x in range(0, 9)]
+    def __init__(self): 
+        self.data = [None for x in range(0, 81)]
 
-        for row in range(0, 9):
-            for col in range(0, 9):
+    def _index(self, x, y):
+        return (x*9)+y
 
-                c = Cell(None)
-                self.rows[row][col] = c
-                self.cols[col][row] = c
+    def __getitem__(self, pos):
+        i = self._index(*pos)
+        return self.data[i]
 
-    def cell(self, col, row):
-        return self.rows[row][col]
+    def __setitem__(self, pos, value):
+        if (value is None) or ((type(value) is int) and (0 <= value <= 9)):
+            i = self._index(*pos)
+            self.data[i] = value
+
+        else:
+            raise ValueError(
+                "Invalid value: %r" %
+                value)
 
     def __repr__(self):
         x = ""
@@ -166,7 +171,8 @@ class Board(object):
                 if (col==3) or (col==6):
                     x += "|"
 
-                x += unicode(self.cell(col, row))
+                d = self[col, row]
+                x += unicode(d) if d is not None else " "
 
             if row != 8:
                 x += "\n"
