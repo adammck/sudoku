@@ -56,31 +56,63 @@ class Board(object):
             None if (x==" ") else int(x)
             for x in list(re.sub(r'[^0-9 ]', '', tmpl))])
 
+    def next_move(self):
+        """
+        >>> b = Board.parse(INCOMPLETE)
+        >>> b.next_move()
+        [(0, 4, 5), (1, 4, 6), (2, 4, 7), (6, 4, 2), (7, 4, 3), (8, 4, 4)]
+        """
+
+        x = set(range(1, 10))
+        moves = []
+
+        for row in range(0, 9):
+            for col in range(0, 9):
+
+                # ignore this cell if it's already filled
+                i = self._index(col, row)
+                if self.data[i] is not None:
+                    continue
+
+                row_values = set(self._row(row))
+                col_values = set(self._column(col))
+                bck_values = set(self._block(col, row))
+
+                missing = x.difference(row_values, col_values, bck_values)
+
+                if len(missing) == 1:
+                    moves.append((col, row, missing.pop()))
+
+        return moves
+
+
     def _index(self, x, y):
         return (y*9)+x
 
     def _row(self, y):
         i = self._index(0, y)
-        return self.data[i:9]
+        return self.data[i:i+9]
 
     def _column(self, x):
         cells = [self._index(x, y) for y in range(0, 9)]
-        return [self.data[i] for index in cells]
+        return [self.data[index] for index in cells]
 
-    def _block(self, n):
+    def _block(self, x, y):
         """
-        >>> Board.parse(COMPLETE)._block(0)
+        >>> Board.parse(COMPLETE)._block(0, 0)
         [1, 2, 3, 4, 5, 6, 7, 8, 9]
         
-        >>> Board.parse(COMPLETE)._block(8)
+        >>> Board.parse(COMPLETE)._block(8, 8)
         [9, 1, 2, 3, 4, 5, 6, 7, 8]
         """
 
         cells = []
-        
-        pos = self.BLOCK_MAP[n]
-        for y in range(pos[1], pos[1]+3):
-            for x in range(pos[0], pos[0]+3):
+
+        ix = x - (x%3)
+        iy = y - (y%3)
+
+        for y in range(iy, iy+3):
+            for x in range(ix, ix+3):
                 i = self._index(x, y)
                 cells.append(self.data[i])
 
