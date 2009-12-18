@@ -159,17 +159,8 @@ class Board(object):
     NUM_CELLS = 81
     
     def __init__(self, data=None):
-        if data is not None:
-            if len(data) != self.NUM_CELLS:
-                raise ValueError(
-                    "Invalid cells: %r" %
-                    data)
-
-            self.data = data
-
-        else:
-            cells = range(0, self.NUM_CELLS)
-            self.data = [None for x in cells]
+        self.data = data if (data is not None) else\
+            [None for x in range(0, self.NUM_CELLS)]
 
     @classmethod
     def parse(cls, tmpl):
@@ -185,14 +176,8 @@ class Board(object):
         return self.data[i]
 
     def __setitem__(self, pos, value):
-        if (value is None) or ((type(value) is int) and (0 <= value <= 9)):
-            i = self._index(*pos)
-            self.data[i] = value
-
-        else:
-            raise ValueError(
-                "Invalid value: %r" %
-                value)
+        i = self._index(*pos)
+        self.data[i] = value
 
     def __repr__(self):
         x = ""
