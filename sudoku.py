@@ -60,14 +60,46 @@ class Column(object):
 
 class Row(object):
     """
-    Rows contain nine cells.
+    Rows contain nine Cells. Each Cell has a horizontal index between 0
+    (at the top) and 8 (at the bottom).
     """
+
+    def __init__(self):
+        self.cells = [None for x in range(0, 9)]
+
+    def __getitem__(self, index):
+        return self.cells[index]
+
+    def __setitem__(self, index, value):
+        self.cells[index] = value
 
 
 class Block(object):
     """
-    Blocks contain nine cells.
+    Blocks contain nine cells. Each cell has a horizontal and vertical
+    index between 0,0 (top left) and 2,2 (bottom right).
+
+    >>> Block().cells
+    [None, None, None, None, None, None, None, None, None]
+
+    >>> b = Block()
+    >>> b[0,0] = True
+    >>> b[2,2] = False
+    >>> b.cells
+    [True, None, None, None, None, None, None, None, False]
     """
+
+    def __init__(self):
+        self.cells = [None for x in range(0, 9)]
+
+    def _index(self, x, y):
+        return (x*3)+y
+
+    def __getitem__(self, pos):
+        return self.cells[self._index(*pos)]
+
+    def __setitem__(self, pos, value):
+        self.cells[self._index(*pos)] = value
 
 
 class Board(object):
