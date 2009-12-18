@@ -5,18 +5,16 @@
 import re
 
 
-TMPL = """
- 2 | 3 | 4 
-   |   |   
-   |   |   
----+---+---
-   |   |   
-   |   |   
-   |   |   
----+---+---
-   |   |   
-   |   |   
-   |   |   
+INCOMPLETE = """
+123   789
+456   123
+789   456
+234567891
+   891   
+891234567
+345   912
+678   345
+912   678
 """
 
 COMPLETE = """
@@ -33,43 +31,6 @@ COMPLETE = """
 
 class Board(object):
     """
-    Boards contain nine rows, nine columns, and nine blocks.
-
-    >>> Board.parse(TMPL)
-     2 | 3 | 4 
-       |   |   
-       |   |   
-    ---+---+---
-       |   |   
-       |   |   
-       |   |   
-    ---+---+---
-       |   |   
-       |   |   
-       |   |   
-
-    >>> Board.parse(TMPL).is_row_valid(0)
-    True
-
-    >>> Board.parse(TMPL).is_row_complete(0)
-    False
-
-    >>> b = Board()
-    >>> b[1,1] = 1
-    >>> b[4,4] = 2
-    >>> b[7,7] = 3
-    >>> b
-       |   |   
-     1 |   |   
-       |   |   
-    ---+---+---
-       |   |   
-       | 2 |   
-       |   |   
-    ---+---+---
-       |   |   
-       |   | 3 
-       |   |   
     """
 
     NUM_CELLS = 81
@@ -146,22 +107,26 @@ class Board(object):
 
         return True
 
+    def _complete(self, data):
+        return sorted(data) == range(1, 10)
+
     def is_row_complete(self, y):
-        return sorted(self._row(y)) == range(1, 9)
+        return self._complete(self._row(y))
 
     def is_column_complete(self, x):
-        return sorted(self._column(x)) == range(1, 9)
+        return self._complete(self._column(x))
 
     def is_block_complete(self, n):
         """
-        Return True if block *n* is completed.
+        Return True if block *n* is completed. This doesn't necessarily
+        mean that it is correct, since the other blocks could be wrong.
         
         >>> b = Board.parse(COMPLETE)
         >>> b.is_block_complete(0)
         True
         """
 
-        return sorted(self._block(n)) == range(1, 9)
+        return self._complete(self._block(n))
 
     def __repr__(self):
         x = ""
