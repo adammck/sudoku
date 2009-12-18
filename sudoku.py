@@ -32,6 +32,9 @@ class Cell(object):
         return ("<Cell:%s>" %
             (self.value if (self.value is not None) else "?"))
 
+    def __unicode__(self):
+        return unicode(self.value) if (self.value is not None) else " "
+
 
 class Column(object):
     """
@@ -105,7 +108,70 @@ class Block(object):
 class Board(object):
     """
     Boards contain nine rows, nine columns, and nine blocks.
+
+    >>> Board()
+       |   |   
+       |   |   
+       |   |   
+    ---+---+---
+       |   |   
+       |   |   
+       |   |   
+    ---+---+---
+       |   |   
+       |   |   
+       |   |   
+
+    >>> b = Board()
+    >>> b.rows[1][1] = "X"
+    >>> b.rows[4][4] = "Y"
+    >>> b.rows[7][7] = "Z"
+    >>> b
+       |   |   
+     X |   |   
+       |   |   
+    ---+---+---
+       |   |   
+       | Y |   
+       |   |   
+    ---+---+---
+       |   |   
+       |   | Z 
+       |   |   
     """
+
+    def __init__(self):
+        self.blocks = [Block()  for x in range(0, 9)]
+        self.cols   = [Column() for x in range(0, 9)]
+        self.rows   = [Row()    for x in range(0, 9)]
+
+        for row in range(0, 9):
+            for col in range(0, 9):
+
+                c = Cell(None)
+                self.rows[row][col] = c
+                self.cols[col][row] = c
+
+    def cell(self, col, row):
+        return self.rows[row][col]
+
+    def __repr__(self):
+        x = ""
+
+        for row in range(0, 9):
+            if (row==3) or (row==6):
+                x += "---+---+---\n"
+
+            for col in range(0, 9):
+                if (col==3) or (col==6):
+                    x += "|"
+
+                x += unicode(self.cell(col, row))
+
+            if row != 8:
+                x += "\n"
+
+        return x
 
 
 if __name__ == "__main__":
