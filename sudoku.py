@@ -56,16 +56,19 @@ class Board(object):
             None if (x==" ") else int(x)
             for x in list(re.sub(r'[^0-9 ]', '', tmpl))])
 
-    def next_move(self):
+    def moves(self):
         """
         >>> b = Board.parse(INCOMPLETE)
-        >>> b.next_move()
+        >>> b.moves()
         [(0, 4, 5), (1, 4, 6), (2, 4, 7), (6, 4, 2), (7, 4, 3), (8, 4, 4)]
         """
 
-        x = set(range(1, 10))
+        # define a full range, which we can compare against columns,
+        # rows, or blocks. they're all the same when stored as sets.
+        line = set(range(1, 10))
         moves = []
 
+        # iterate every cell on the board
         for row in range(0, 9):
             for col in range(0, 9):
 
@@ -74,12 +77,18 @@ class Board(object):
                 if self.data[i] is not None:
                     continue
 
+                # fetch the adjacent cells
                 row_values = set(self._row(row))
                 col_values = set(self._column(col))
                 bck_values = set(self._block(col, row))
 
-                missing = x.difference(row_values, col_values, bck_values)
+                # subtract the values present in the adjacent cells
+                # (since this cell *can't* be of any of those values),
+                # to leave the list of possibilities for this cell
+                missing = line.difference(row_values, col_values, bck_values)
 
+                # if there's only *one* possibility, we've found the
+                # solution to this cell
                 if len(missing) == 1:
                     moves.append((col, row, missing.pop()))
 
@@ -152,10 +161,10 @@ class Board(object):
         """
         Return True if block *n* is completed. This doesn't necessarily
         mean that it is correct, since the other blocks could be wrong.
-        
-        >>> b = Board.parse(COMPLETE)
-        >>> b.is_block_complete(0)
-        True
+
+        #>>> b = Board.parse(COMPLETE)
+        #>>> b.is_block_complete(0)
+        #True
         """
 
         return self._complete(self._block(n))
