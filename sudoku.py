@@ -2,6 +2,9 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 
+import re
+
+
 class Cell(object):
     """
     Cells contain either None, or an integer 0-9.
@@ -104,12 +107,25 @@ class Block(object):
     def __setitem__(self, pos, value):
         self.cells[self._index(*pos)] = value
 
+TMPL = """
+   |   |   
+   |   |   
+   |   |   
+---+---+---
+   |   |   
+   |   |   
+   |   |   
+---+---+---
+   |   |   
+   |   |   
+   |   |   
+"""
 
 class Board(object):
     """
     Boards contain nine rows, nine columns, and nine blocks.
 
-    >>> Board()
+    >>> Board.parse(TMPL)
        |   |   
        |   |   
        |   |   
@@ -140,8 +156,26 @@ class Board(object):
        |   |   
     """
 
-    def __init__(self): 
-        self.data = [None for x in range(0, 81)]
+    NUM_CELLS = 81
+    
+    def __init__(self, data=None):
+        if data is not None:
+            if len(data) != self.NUM_CELLS:
+                raise ValueError(
+                    "Invalid cells: %r" %
+                    data)
+
+            self.data = data
+
+        else:
+            cells = range(0, self.NUM_CELLS)
+            self.data = [None for x in cells]
+
+    @classmethod
+    def parse(cls, tmpl):
+        return cls([
+            None if (x==" ") else int(x)
+            for x in list(re.sub(r'[^0-9 ]', '', tmpl))])
 
     def _index(self, x, y):
         return (x*9)+y
