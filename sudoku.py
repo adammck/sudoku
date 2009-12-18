@@ -35,8 +35,27 @@ class Cell(object):
 
 class Column(object):
     """
-    Columns contain nine cells.
+    Columns contain nine Cells. Each Cell has a vertical index between
+    0 (at the top) and 8 (at the bottom).
+
+    >>> Column().cells
+    [None, None, None, None, None, None, None, None, None]
+
+    >>> col = Column()
+    >>> col[0] = True
+    >>> col[8] = False
+    >>> col.cells
+    [True, None, None, None, None, None, None, None, False]
     """
+
+    def __init__(self):
+        self.cells = [None for x in range(0, 9)]
+
+    def __getitem__(self, index):
+        return self.cells[index]
+
+    def __setitem__(self, index, value):
+        self.cells[index] = value
 
 
 class Row(object):
