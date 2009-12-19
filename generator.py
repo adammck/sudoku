@@ -33,4 +33,23 @@ def parse_board(tmpl):
     chars = re.sub(r'\D', '', tmpl)
     return [int(x) for x in list(chars)]
 
-print parse_board(COMPLETE)
+def render_board(board):
+    x = ""
+
+    for row in range(0, 9):
+        if (row==3) or (row==6):
+            x += "---+---+---\n"
+
+        for col in range(0, 9):
+            if (col==3) or (col==6):
+                x += "|"
+
+            x += unicode(board[(row*9)+col])
+
+        if row != 8:
+            x += "\n"
+
+    return x
+
+board = parse_board(COMPLETE)
+print render_board(board)
