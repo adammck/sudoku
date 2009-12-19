@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import re
+import random
 
 COMPLETE = """
 123|456|789
@@ -51,5 +52,21 @@ def render_board(board):
 
     return x
 
+def swap_row(board, a, b):
+    sa = slice((a*9), (a+1)*9)
+    sb = slice((b*9), (b+1)*9)
+
+    # swap the array slices
+    board[sa], board[sb] =\
+        board[sb], board[sa]
+
 board = parse_board(COMPLETE)
+print render_board(board)
+print
+
+for n in range(99):
+    ra = random.randint(0, 8)
+    rb = random.randint(0, 8)
+    swap_row(board, ra, rb)
+
 print render_board(board)
