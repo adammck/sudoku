@@ -22,9 +22,9 @@ COMPLETE = """
 # swapped without invalidating the board. these tuples represent the
 # valid swaps, without crossing blocks.
 SWAPS = (
-    (1,2), (2,3),
-    (4,5), (5,6),
-    (7,8), (8,9))
+    (0,1), (1,2),
+    (3,4), (4,5),
+    (6,7), (7,8))
 
 def parse_board(tmpl):
     """
@@ -53,12 +53,40 @@ def render_board(board):
     return x
 
 def swap_row(board, a, b):
+    """
+    Swap in place two rows of *board*.
+
+    >>> brd = parse_board(COMPLETE)
+    >>> swap_row(brd, 0, 1)
+    >>> swap_row(brd, 7, 8)
+    >>> print render_board(brd)
+    456|789|123
+    123|456|789
+    789|123|456
+    ---+---+---
+    234|567|891
+    567|891|234
+    891|234|567
+    ---+---+---
+    345|678|912
+    912|345|678
+    678|912|345
+    """
+
     sa = slice((a*9), (a+1)*9)
     sb = slice((b*9), (b+1)*9)
+    #print "R%d > R%d" % (a, b)
 
-    # swap the array slices
     board[sa], board[sb] =\
         board[sb], board[sa]
+
+def shuffle_row(board):
+    """
+    Swap two random rows of *board*, keeping the board valid.
+    """
+
+    sw = random.choice(SWAPS)
+    swap_row(board, *sw)
 
 def swap_column(board, a, b):
     """
@@ -80,22 +108,32 @@ def swap_column(board, a, b):
     768|912|354
     192|345|687
     """
+
     sa = slice(a, 81+a, 9)
     sb = slice(b, 81+b, 9)
+    #print "C%d > C%d" % (a, b)
 
     board[sa], board[sb] =\
         board[sb], board[sa]
 
+def shuffle_column(board):
+    """
+    Swap two random columns of *board*, keeping the board valid.
+    """
+
+    sw = random.choice(SWAPS)
+    swap_column(board, *sw)
+
 board = parse_board(COMPLETE)
+
+shuffles = (
+    shuffle_row,
+    shuffle_column)
+
+for n in range(999):
+    random.choice(shuffles)(board)
+
 print render_board(board)
-print
-
-#for n in range(99):
-    #ra = random.randint(0, 8)
-    #rb = random.randint(0, 8)
-    #swap_row(board, ra, rb)
-
-#print render_board(board)
 
 if __name__ == "__main__":
     import doctest
