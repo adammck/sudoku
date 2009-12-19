@@ -60,13 +60,43 @@ def swap_row(board, a, b):
     board[sa], board[sb] =\
         board[sb], board[sa]
 
+def swap_column(board, a, b):
+    """
+    Swap in place two columns of *board*.
+
+    >>> brd = parse_board(COMPLETE)
+    >>> swap_column(brd, 0, 1)
+    >>> swap_column(brd, 7, 8)
+    >>> print render_board(brd)
+    213|456|798
+    546|789|132
+    879|123|465
+    ---+---+---
+    324|567|819
+    657|891|243
+    981|234|576
+    ---+---+---
+    435|678|921
+    768|912|354
+    192|345|687
+    """
+    sa = slice(a, 81+a, 9)
+    sb = slice(b, 81+b, 9)
+
+    board[sa], board[sb] =\
+        board[sb], board[sa]
+
 board = parse_board(COMPLETE)
 print render_board(board)
 print
 
-for n in range(99):
-    ra = random.randint(0, 8)
-    rb = random.randint(0, 8)
-    swap_row(board, ra, rb)
+#for n in range(99):
+    #ra = random.randint(0, 8)
+    #rb = random.randint(0, 8)
+    #swap_row(board, ra, rb)
 
-print render_board(board)
+#print render_board(board)
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
