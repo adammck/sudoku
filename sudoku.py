@@ -33,22 +33,9 @@ class Board(object):
     """
     """
 
-    NUM_CELLS = 81
-    BLOCK_MAP = {
-        0: (0, 0),
-        1: (3, 0),
-        2: (6, 0),
-        3: (0, 3),
-        4: (3, 3),
-        5: (6, 3),
-        6: (0, 6),
-        7: (3, 6),
-        8: (6, 6),
-    }
-
     def __init__(self, data=None):
         self.data = data if (data is not None) else\
-            [None for x in range(0, self.NUM_CELLS)]
+            [None for x in range(0, 81)]
 
     @classmethod
     def parse(cls, tmpl):
