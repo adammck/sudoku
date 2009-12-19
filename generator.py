@@ -49,7 +49,8 @@ def render_board(board):
             if (col==3) or (col==6):
                 x += "|"
 
-            x += unicode(board[(row*9)+col])
+            cell = board[(row*9)+col]
+            x += unicode(cell) if cell is not None else " "
 
         if row != 8:
             x += "\n"
