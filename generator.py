@@ -35,6 +35,10 @@ def parse_board(tmpl):
     return [int(x) for x in list(chars)]
 
 def render_board(board):
+    """
+    Return a string containing *board*, rendered in a nice 3x3 grid.
+    """
+
     x = ""
 
     for row in range(0, 9):
@@ -63,14 +67,6 @@ def swap_row(board, a, b):
     board[sa], board[sb] =\
         board[sb], board[sa]
 
-def shuffle_row(board):
-    """
-    Swap two random rows of *board*, keeping the board valid.
-    """
-
-    sw = random.choice(SWAPS)
-    swap_row(board, *sw)
-
 def swap_column(board, a, b):
     """
     Swap in place two columns of *board*.
@@ -82,21 +78,18 @@ def swap_column(board, a, b):
     board[sa], board[sb] =\
         board[sb], board[sa]
 
-def shuffle_column(board):
+def shuffle(board):
     """
-    Swap two random columns of *board*, keeping the board valid.
+    Swap two random rows or columns of *board*, without invalidating it.
     """
 
     sw = random.choice(SWAPS)
-    swap_column(board, *sw)
-
+    random.choice([swap_row, swap_column])(board, *sw)
 
 if __name__ == "__main__":
     board = parse_board(COMPLETE)
 
     for n in range(999):
-        random.choice([
-            shuffle_row,
-            shuffle_column])(board)
+        shuffle(board)
 
     print render_board(board)
