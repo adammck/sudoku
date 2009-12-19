@@ -2,6 +2,7 @@
 # vim: ai ts=4 sts=4 et sw=4
 
 import re
+import copy
 import random
 
 COMPLETE = """
@@ -95,4 +96,16 @@ if __name__ == "__main__":
     for n in range(999):
         shuffle(board)
 
-    print render_board(board)
+    # import the board solver
+    from sudoku import Board
+
+    # keep removing cells until the board becomes unsolvable, then print
+    # out the previous (solvable) board and quit.
+    while True:
+        i = random.randint(0, 80)
+        old_board = copy.copy(board)
+        board[i] = None
+
+        if len(Board(board).moves()) == 0:
+            print render_board(old_board)
+            break
