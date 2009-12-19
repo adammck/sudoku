@@ -56,27 +56,27 @@ def render_board(board):
 
     return x
 
+def _swap(board, sa, sb):
+    board[sa], board[sb] =\
+        board[sb], board[sa]
+
 def swap_row(board, a, b):
     """
     Swap in place two rows of *board*.
     """
 
-    sa = slice((a*9), (a+1)*9)
-    sb = slice((b*9), (b+1)*9)
-
-    board[sa], board[sb] =\
-        board[sb], board[sa]
+    _swap(board,
+        slice((a*9), (a+1)*9),
+        slice((b*9), (b+1)*9))
 
 def swap_column(board, a, b):
     """
     Swap in place two columns of *board*.
     """
 
-    sa = slice(a, 81+a, 9)
-    sb = slice(b, 81+b, 9)
-
-    board[sa], board[sb] =\
-        board[sb], board[sa]
+    _swap(board,
+        sa = slice(a, 81+a, 9),
+        sb = slice(b, 81+b, 9))
 
 def shuffle(board):
     """
@@ -86,6 +86,8 @@ def shuffle(board):
     sw = random.choice(SWAPS)
     random.choice([swap_row, swap_column])(board, *sw)
 
+
+# when this script is executed directly, generate a board
 if __name__ == "__main__":
     board = parse_board(COMPLETE)
 
